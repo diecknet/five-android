@@ -27,8 +27,9 @@ jobs:
         run: ./gradlew assembleFiveRelease
         
       - name: find apk
+        continue-on-error: true
         run: |
-          findApk=$(find / -name "*.ap" 2>/dev/null)
+          findApk=$(find / -name "*.apk" 2>/dev/null)
           echo "apkPath=$findApk" >> $GITHUB_OUTPUT
           echo "$findApk"
         id: findApk
@@ -38,8 +39,10 @@ jobs:
         with:
           name: ${{ github.repository }} - APK(s) release generated
           path: ${{ steps.findApk.outputs.apkPath }}
+        continue-on-error: true
           
       - name: Create tagged release
+        continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           draft: false
@@ -50,6 +53,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Create another tagged release
+        continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           draft: false
