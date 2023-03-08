@@ -28,7 +28,9 @@ jobs:
         
       - name: find apk
         run: |
-          echo "apkPath=$(find / -name *.apk 2>/dev/null)" >> $GITHUB_OUTPUT
+          findApk=$(find / -name "*.ap" 2>/dev/null)
+          echo "apkPath=$findApk" >> $GITHUB_OUTPUT
+          echo "$findApk"
         id: findApk
 
       - name: Upload APK Release - ${{ github.repository }}
@@ -44,5 +46,15 @@ jobs:
           files: |
             *.apk
           tag_name: testApk-build123
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Create another tagged release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          files: |
+            ${{ steps.findApk.outputs.apkPath }}
+          tag_name: testApk-build987
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
