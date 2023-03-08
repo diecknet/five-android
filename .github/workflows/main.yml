@@ -37,15 +37,17 @@ jobs:
         with:
           fileName: '.keystore'
           fileDir: './'
-          encodedString: ${{ secrets.SOME_ENCODED_STRING }}
+          encodedString: ${{ secrets.KEYSTORE }}
 
-      - name: Create tagged release 1
+      - name: Create tagged release
         continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           draft: false
           files: |
-            app/build/outputs/apk/five/release/*.apk
+            app/build/outputs/apk/five/
           tag_name: ${{ steps.release_tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
