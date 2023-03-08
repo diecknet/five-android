@@ -1,38 +1,37 @@
+name: Test APK
+
 on:
   workflow_dispatch:
-  
+  push:
+    branches: [ main ]
+
+env:
+  main_project_module: app
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:        
-      - name: test cmd
-        continue-on-error: true
-        run: |
-          pwd
-        id: testCmd
-        
-      - name: test cmd
-        continue-on-error: true
-        run: |
-          ls -lah
-        id: testCmd2
-        
-      - name: Upload APK Release - ${{ github.repository }}
-        uses: actions/upload-artifact@v3
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
         with:
-          name: ${{ github.repository }} - APK(s) release generated
-          path: app/build/outputs/apk/five/release/app-five-release-unsigned.apk
-        continue-on-error: true
-          
-      - name: Create tagged release
-        continue-on-error: true
+          submodules: recursive
+
+      - name: Get JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      - name: Build app
+        run: ./gradlew assembleFiveRelease
+        
+      - name: Create tagged release with path
         uses: softprops/action-gh-release@v1
         with:
           draft: false
           files: |
-            *.apk
-          tag_name: testApk-build123
+            app/build/outputs/apk/five/release/app-five-release-unsigned.apk
+          tag_name: testApk-build123a
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
