@@ -24,7 +24,7 @@ jobs:
           java-version: 11
 
       - name: Build app
-        run: ./gradlew assembleFiveRelease
+        run: ./gradlew assembleFiveBeta
 
       - name: Generate Tag name for release
         run: |
