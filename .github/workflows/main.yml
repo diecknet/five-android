@@ -29,11 +29,11 @@ jobs:
       - name: Upload APK Release - ${{ github.repository }}
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.repository }} - APK(s) release generated
+          name: APK-File
           path: app/build/outputs/apk/five/release/app-five-release-unsigned.apk
         continue-on-error: true
           
-      - name: Create tagged release
+      - name: Create tagged release 1
         continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
