@@ -26,19 +26,11 @@ jobs:
       - name: Build app
         run: ./gradlew assembleFiveRelease
         
-      - name: find apk
-        continue-on-error: true
-        run: |
-          findApk=$(find / -name "*.apk" 2>/dev/null)
-          echo "apkPath=$findApk" >> $GITHUB_OUTPUT
-          echo "$findApk"
-        id: findApk
-
       - name: Upload APK Release - ${{ github.repository }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.repository }} - APK(s) release generated
-          path: ${{ steps.findApk.outputs.apkPath }}
+          path: app/build/outputs/apk/five/release/app-five-release-unsigned.apk
         continue-on-error: true
           
       - name: Create tagged release
@@ -48,17 +40,6 @@ jobs:
           draft: false
           files: |
             *.apk
-          tag_name: testApk-build123
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Create another tagged release
-        continue-on-error: true
-        uses: softprops/action-gh-release@v1
-        with:
-          draft: false
-          files: |
-            ${{ steps.findApk.outputs.apkPath }}
-          tag_name: testApk-build987
+          tag_name: testApk-build123a
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
