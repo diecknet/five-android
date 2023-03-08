@@ -24,20 +24,30 @@ jobs:
           java-version: 11
 
       - name: Build app
-        run: ./gradlew assembleFiveBeta
+        run: ./gradlew assembleFiveRelease
 
       - name: Generate Tag name for release
         run: |
           echo "tag=build-$(date -I)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
         id: release_tag
+      
+      - name: Retrieve Keystore from Github Secrets
+        id: write_keystore_file
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: '.keystore'
+          fileDir: './'
+          encodedString: ${{ secrets.KEYSTORE }}
 
-      - name: Create tagged release 1
+      - name: Create tagged release
         continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           draft: false
           files: |
-            app/build/outputs/apk/five/beta/*.apk
+            app/build/outputs/apk/five/
           tag_name: ${{ steps.release_tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
