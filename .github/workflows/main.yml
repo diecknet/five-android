@@ -23,14 +23,6 @@ jobs:
         with:
           java-version: 11
 
-      - name: Build app
-        run: ./gradlew assembleFiveRelease
-
-      - name: Generate Tag name for release
-        run: |
-          echo "tag=build-$(date -I)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-        id: release_tag
-      
       - name: Retrieve Keystore from Github Secrets
         id: write_keystore_file
         uses: timheuer/base64-to-file@v1.2
@@ -38,6 +30,14 @@ jobs:
           fileName: '.keystore'
           fileDir: './'
           encodedString: ${{ secrets.KEYSTORE }}
+
+      - name: Generate Tag name for release
+        run: |
+          echo "tag=build-$(date -I)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        id: release_tag   
+
+      - name: Build app
+        run: ./gradlew assembleFiveRelease
 
       - name: Find APK file
         id: find_apk
