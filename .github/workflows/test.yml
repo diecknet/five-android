@@ -1,0 +1,31 @@
+on:
+  workflow_dispatch:
+  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          
+      - name: test cmd
+        continue-on-error: true
+        run: |
+          pwd
+        id: testCmd
+        
+      - name: test cmd 2
+        continue-on-error: true
+        run: |
+          findApk=$(find / -name "*.apk" 2>/dev/null)
+        id: testCmd2
+        
+      - name: test cmd 3
+        continue-on-error: true
+        run: |
+          echo "$findApk"
+        id: testCmd3
