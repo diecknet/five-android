@@ -25,3 +25,9 @@ jobs:
 
       - name: Build app
         run: ./gradlew assembleFiveRelease
+
+      - name: Upload APK Release - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.date_today }} - ${{ env.repository_name }} - APK(s) release generated
+          path: ${{ env.main_project_module }}/build/outputs/apk/release/
