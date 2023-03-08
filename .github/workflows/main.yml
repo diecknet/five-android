@@ -25,13 +25,24 @@ jobs:
 
       - name: Build app
         run: ./gradlew assembleFiveRelease
+        
+      - name: find apk
+        run: |
+          echo "apkPath=$(find / -name *.apk 2>/dev/null)" >> $GITHUB_OUTPUT
+        id: findApk
 
       - name: Upload APK Release - ${{ github.repository }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.date_today }} - ${{ github.repository }} - APK(s) release generated
-          path: ${{ env.GRADLE_USER_HOME }}/wrapper/dists
+          name: ${{ github.repository }} - APK(s) release generated
+          path: ${{ steps.findApk.outputs.apkPath }}
           
-      - name: test find apk
-        run: |
-          find / -name *.apk
+      - name: Create tagged release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          files: |
+            *.apk
+          tag_name: testApk-build123
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
