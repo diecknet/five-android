@@ -37,7 +37,7 @@ jobs:
         with:
           draft: false
           files: |
-            app/build/outputs/apk/five/*.apk
+            app/build/outputs/apk/five/beta/*.apk
           tag_name: ${{ steps.release_tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
