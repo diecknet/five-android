@@ -1,4 +1,4 @@
-name: Blokada 5 for Android (CI)
+name: Build Blokada 5 for Android (.apk file)
 
 on:
   workflow_dispatch:
@@ -46,10 +46,9 @@ jobs:
         id: find_apk
         run: |
           apk_path=$(find app/build/outputs/ -name '*.apk' | head -n 1)
-          echo "::set-output name=apk_path::$apk_path"
+          echo "apk_path=$apk_path" >> $GITHUB_OUTPUT
 
       - name: Create tagged release
-        continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
           draft: false          
