@@ -6,26 +6,33 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Check out repo
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          
+    steps:        
       - name: test cmd
         continue-on-error: true
         run: |
           pwd
         id: testCmd
         
-      - name: test cmd 2
+      - name: test cmd
         continue-on-error: true
         run: |
-          findApk=$(find / -name "*.apk" 2>/dev/null)
+          ls -lah
         id: testCmd2
         
-      - name: test cmd 3
+      - name: Upload APK Release - ${{ github.repository }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ github.repository }} - APK(s) release generated
+          path: app/build/outputs/apk/five/release/app-five-release-unsigned.apk
         continue-on-error: true
-        run: |
-          echo "$findApk"
-        id: testCmd3
+          
+      - name: Create tagged release
+        continue-on-error: true
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: false
+          files: |
+            *.apk
+          tag_name: testApk-build123
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
