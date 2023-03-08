@@ -47,26 +47,17 @@ android {
             // By default it is a 'debuggable' build, signed with a debug key.
         }
 
-        release {
-
-            def f = rootProject.file('keystore.properties')
-            if (f.exists()) {
-                println "Release build will use Blokada keystore"
-                Properties props = new Properties()
-                InputStream inputStream = new FileInputStream(f)
-                props.load(inputStream)
-                inputStream.close()
-
-                signingConfigs {
-                    release {
-                        storeFile rootProject.file(props['BLOKADA_KEY_PATH'])
-                        storePassword props['BLOKADA_STORE_PASSWORD']
-                        keyAlias 'blokada'
-                        keyPassword props['BLOKADA_KEY_PASSWORD']
-                    }
+        release {          
+            signingConfigs {
+                release {
+                    storeFile rootProject.file('.keystore')
+                    storePassword System.getenv("KEYSTORE_PASSWORD")
+                    keyAlias 'blokada'
+                    keyPassword System.getenv("KEYSTORE_KEY_PASSWORD")
                 }
-                signingConfig signingConfigs.release
             }
+            signingConfig signingConfigs.release
+            
 
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
