@@ -39,13 +39,18 @@ jobs:
           fileDir: './'
           encodedString: ${{ secrets.KEYSTORE }}
 
+      - name: Find APK file
+        id: find_apk
+        run: |
+          apk_path=$(find app/build/outputs/ -name '*.apk' | head -n 1)
+          echo "::set-output name=apk_path::$apk_path"
+
       - name: Create tagged release
         continue-on-error: true
         uses: softprops/action-gh-release@v1
         with:
-          draft: false
-          files: |
-            app/build/outputs/apk/five/
+          draft: false          
+          files: ${{ steps.find_apk.outputs.apk_path }}
           tag_name: ${{ steps.release_tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
