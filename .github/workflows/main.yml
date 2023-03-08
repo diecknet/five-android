@@ -25,7 +25,12 @@ jobs:
 
       - name: Build app
         run: ./gradlew assembleFiveRelease
-                
+
+      - name: Generate Tag name for release
+        run: |
+          echo "tag=build-$(date -I)-$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        id: release_tag
+
       - name: Create tagged release 1
         continue-on-error: true
         uses: softprops/action-gh-release@v1
@@ -33,6 +38,6 @@ jobs:
           draft: false
           files: |
             app/build/outputs/apk/five/release/app-five-release-unsigned.apk
-          tag_name: testApk-build123abc
+          tag_name: ${{ steps.release_tag.outputs.tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
